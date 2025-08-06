@@ -1,119 +1,87 @@
-import psycopg2
-from psycopg2.extras import DictCursor
-from core.database import *
-from datetime import datetime
-from apps.auth.utils import *
+import random
 
-admin_email = "a"
-admin_password = "a"
+from twilio.rest import Client
 
-class RegisterView:
-    def send_code(self):
-        pass
+from apps.auth.queries import AuthQueries
+from apps.auth.utils import AuthValidation
+from core.config import AUTH_TOKEN, ACCOUNT_SID
 
-    def check_code(self):
-        user_code = input("Code: ")
 
+class RegisterView(AuthValidation, AuthQueries):
+    def verify_code(self):
+        phone_number = input("Enter your phone number: ")
+        code = input("Enter your verification code: ")
+
+        verification_code = self.get_verification_code(phone_number, code)
+        if not verification_code:
+            print("Invalid code")
+            return self.verify_code()
+        else:
+            # check validation time
+            self.update_user_status(True, phone_number)
+            print("You can login now")
+            return True
+
+    def generate_code(self, phone_number):
+        while True:
+            random_code = str(random.randint(1000, 9999))
+            verification_code = self.get_verification_code(phone_number, random_code)
+            if not verification_code:
+                self.add_code(phone_number, random_code)
+                return random_code
+
+    def send_code(self, phone_number):
+        twilio_number = '+13202447896'
+        to_number = '+821053730692'
         try:
-            conn = get_db_conn()
-            cursor = conn.cursor(cursor_factory=DictCursor)
+            client = Client(ACCOUNT_SID, AUTH_TOKEN)
+            code = self.generate_code(phone_number)
 
-            cursor.execute("SELECT email FROM codes WHERE code = %s;", (user_code,))
-            result = cursor.fetchone()
+            client.messages.create(
+                body=f"Hello! This is your Olx_n68 account verification code: {code}",
+                from_=twilio_number,
+                to=to_number
+            )
 
-            if result is None:
-                print("Invalid code")
-                cursor.close()
-                conn.close()
-                return self.check_code()
-
-            email = result["email"]
-            cursor.execute("UPDATE users SET is_active = TRUE WHERE email = %s RETURNING id;", (email,))
-            updated = cursor.fetchone()
-
-            conn.commit()
-            cursor.close()
-            conn.close()
-
-            if updated:
-                print("User activated successfully")
-                return True
-            else:
-                print("User with this email not found")
-                return False
-
-        except psycopg2.OperationalError as e:
-            print(e)
-            print("Something went wrong")
+            print("Please check your messages and enter code: ")
+            return self.verify_code()
+        except Exception as e:
+            print(f"Something went wrong!!: {e}")
             return None
 
     def register(self):
         full_name = input("Enter your full name: ")
-        email = input("Enter your email: ")
+        phone_number = input("Enter your phone number: ")
         password1 = input("Enter your password: ")
         password2 = input("Confirm your password: ")
 
-        while password1 != password2:
-            print("Doesnt not match")
+        while not self.check_phone_number(phone_number):
+            phone_number = input("Enter your phone number: ")
+
+        while not self.check_password(password1, password2):
             password1 = input("Enter your password: ")
             password2 = input("Confirm your password: ")
 
-        try:
-            conn = get_db_conn()
-            cursor = conn.cursor(cursor_factory=DictCursor)
-            query = "INSERT INTO users (full_name, email, password, is_active, is_login, created_at) VALUES (%s, %s, %s, %s, %s, %s )"
-            params = (full_name, email, password2, False, False, datetime.now())
-            cursor.execute(query, params)
-
-            random_code = get_random_code(email=email)
-            cursor.execute(
-                "INSERT INTO codes (code, email) VALUES (%s, %s);",
-                (random_code, email))
-            conn.commit()
-            print("you are logged in successfully!")
-            cursor.close()
-            conn.close()
-
-            send_mail(receiver_email=email, body=str(random_code))
-            return self.check_code()
-
-        except psycopg2.OperationalError as e:
-            print(e)
-            print("Something went wrong")
+        params = (full_name, phone_number, password1,)
+        if self.add_user(params):
+            return self.send_code(phone_number)
+        else:
+            print("Something get wrong, please try again later")
             return None
 
 
-class LoginView:
+class LoginView(AuthQueries):
     def login(self):
-        email = input("your email: ")
+        phone_number = input("Enter your phone number: ")
         password = input("Enter your password: ")
-        if email == admin_email and password == admin_password:
-            return "admin"
-        try:
-            conn = get_db_conn()
-            cursor = conn.cursor(cursor_factory=DictCursor)
-            query = "SELECT id from users where email = %s and password = %s;"
-            params = (email, password)
-            cursor.execute(query, params)
-            users = cursor.fetchone()
-            if users:
-                cursor.execute("update users set is_login = true where email = %s;", (email,))
-                print("you are log in!")
-                conn.commit()
-                cursor.close()
-                conn.close()
-                return "users"
-            else:
-                print("Invalid username or password")
-                cursor.close()
-                conn.close()
-                return False
-
-        except psycopg2.Error as e:
-            print("Database error:", e)
-            return False
+        user = self.get_user_by_phone_number(phone_number)
+        if user and user['password'] == password:
+            self.update_user_is_login(phone_number=phone_number)
+            print(f"Welcome, {user['full_name']}")
+            return True
+        return False
 
 
-class Logout:
-    def logout(self):
-        pass
+class LogoutView(AuthQueries):
+    def logout_all(self):
+        self.logout_all_users()

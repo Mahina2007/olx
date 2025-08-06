@@ -1,30 +1,48 @@
-from apps.auth.queries import get_active_user
-from core.utils import *
-from apps.auth.views import *
-from apps.auth.models import *
+import logging
+
+from apps.auth.queries import show_products
+from apps.auth.views import RegisterView, LogoutView, LoginView
+from core.utils import main_menu, get_user_option, execute_tables
+from apps.posts.views import *
+
+logging.basicConfig(level=logging.INFO, filename='logs.log')
+logger = logging.getLogger(__name__)
 
 
 class Menu:
-    @staticmethod
-    def main_menu():
-        r = RegisterView()
-        l = LoginView()
+    def main_menu(self):
         option = get_user_option(menu=main_menu, max_option=4)
-
-        if option == '1':
-            pass
-        elif option == '2':
-            r.register()
-        elif option == '3':
-            l.login()
-        elif option == '4':
-            print("Goodbye!")
-            return
+        if option == "1":
+            show_products()
+            return self.main_menu()
+        elif option == "2":
+            result = RegisterView().register()
+            if not result:
+                print("Something get wrong, try again later")
+        elif option == "3":
+            user = LoginView().login()
+            if user:
+                return self.user_menu()
+            print("Invalid phone number or password")
         else:
-            print("Invalid option. Please try again.")
+            print("Goodbye!")
+            return None
+
 
     def user_menu(self):
-        pass
+        option = get_user_option(menu=user_menu, max_option=4)
+        if option == "1":
+            UserMenu().add_post()
+            return Menu().user_menu()
+        elif option == "2":
+            UserMenu().delete_post()
+            return Menu().user_menu()
+        elif option == "3":
+            UserMenu().update_post()
+        else:
+            print("Goodbye!")
+            return None
+
 
     def admin_menu(self):
         pass
@@ -32,4 +50,5 @@ class Menu:
 
 if __name__ == '__main__':
     execute_tables()
-    Menu.main_menu()
+    LogoutView.logout_all_users()
+    Menu().main_menu()

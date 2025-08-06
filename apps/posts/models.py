@@ -8,7 +8,7 @@ posts_query = """
                   is_active   BOOLEAN   DEFAULT FALSE,
                   created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-              );
+              ) \
               """
 
 comments_query = """
@@ -19,5 +19,5 @@ comments_query = """
                      post_id       INTEGER REFERENCES posts (id),
                      comment    TEXT NOT NULL,
                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                 )
+                 ) \
                  """
