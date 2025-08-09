@@ -69,17 +69,21 @@ class RegisterView(AuthValidation, AuthQueries):
             print("Something get wrong, please try again later")
             return None
 
+admin_phone_number = "a"
+admin_password = "a"
 
 class LoginView(AuthQueries):
     def login(self):
         phone_number = input("Enter your phone number: ")
         password = input("Enter your password: ")
         user = self.get_user_by_phone_number(phone_number)
+        if phone_number == admin_phone_number and password == admin_password:
+            return "admin"
         if user and user['password'] == password:
             self.update_user_is_login(phone_number=phone_number)
             print(f"Welcome, {user['full_name']}")
-            return True
-        return False
+            return "user"
+        return None
 
 
 class LogoutView(AuthQueries):

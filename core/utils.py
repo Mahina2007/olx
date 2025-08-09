@@ -7,6 +7,12 @@ main_menu = """
 4. Exit
 """
 
+admin_menu = """
+1. View users
+2. View active users
+3. Exit
+"""
+
 
 
 def get_user_option(menu: str, max_option: int) -> str:

@@ -2,7 +2,9 @@ import logging
 
 from apps.auth.queries import show_products
 from apps.auth.views import RegisterView, LogoutView, LoginView
-from core.utils import main_menu, get_user_option, execute_tables
+from apps.messages.views import MessageView
+from core.admin_queries import view_users, view_active_users
+from core.utils import *
 from apps.posts.views import *
 
 logging.basicConfig(level=logging.INFO, filename='logs.log')
@@ -21,9 +23,14 @@ class Menu:
                 print("Something get wrong, try again later")
         elif option == "3":
             user = LoginView().login()
-            if user:
+            print(user)
+            if user == "user":
                 return self.user_menu()
-            print("Invalid phone number or password")
+            elif user == "admin":
+                return self.admin_menu()
+            else:
+                print("Invalid phone number or password")
+                return self.main_menu()
         else:
             print("Goodbye!")
             return None
@@ -39,14 +46,25 @@ class Menu:
             return Menu().user_menu()
         elif option == "3":
             UserMenu().update_post()
-        else:
-            print("Goodbye!")
-            return None
-
+        elif option == "4":
+            if MessageView().show_all_users():
+                MessageView().send_message()
+            return self.user_menu()
+        elif option == "5":
+            LogoutView().logout_all()
+            return self.main_menu()
 
     def admin_menu(self):
-        pass
-
+        option = get_user_option(menu=admin_menu, max_option=3)
+        if option == "1":
+            view_users()
+            self.admin_menu()
+        elif option == "2":
+            view_active_users()
+            self.admin_menu()
+        elif option == "3":
+            LogoutView().logout_all()
+            return self.main_menu()
 
 if __name__ == '__main__':
     execute_tables()

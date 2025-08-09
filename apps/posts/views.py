@@ -8,7 +8,8 @@ user_menu = """
 1. Add a post
 2. Delete a post
 3. Update a post
-4. Exit
+4. Chat
+5. Exit
 """
 class UserMenu(PostsQueries):
     def add_post(self):
