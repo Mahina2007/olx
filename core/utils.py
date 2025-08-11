@@ -1,3 +1,4 @@
+from apps.admin.models import kitchens_query, couriers_query
 from core.database import execute_query
 
 main_menu = """
@@ -6,11 +7,6 @@ main_menu = """
 3. Exit
 """
 
-admin_menu = """
-1. View restaurant
-2. View active restaurant
-3. Exit
-"""
 
 
 
@@ -26,11 +22,10 @@ def get_user_option(menu: str, max_option: int) -> str:
 
 def execute_tables():
     from apps.auth.models import users_query, verification_codes_query
-    from apps.messages.models import messages_query
-    from apps.orders.models import orders_query, comments_query
+    from apps.orders.models import orders_query
 
     execute_query(query=users_query)
     execute_query(query=verification_codes_query)
-    execute_query(query=messages_query)
     execute_query(query=orders_query)
-    execute_query(query=comments_query)
+    execute_query(query=kitchens_query)
+    execute_query(query=couriers_query)

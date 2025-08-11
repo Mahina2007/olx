@@ -32,8 +32,8 @@ class AuthQueries:
     @staticmethod
     def add_user(params: tuple) -> None | bool:
         try:
-            query = """INSERT INTO restaurant (full_name, phone_number, password, role)
-                       VALUES (%s, %s, %s)
+            query = """INSERT INTO restaurant (full_name, phone_number, password)
+                       VALUES (%s, %s, %s, %s)
                     """
 
             execute_query(query=query, params=params)
@@ -81,7 +81,7 @@ class AuthQueries:
     @staticmethod
     def logout_all_users() -> None | bool:
         try:
-            query = "UPDATE restaurant SET is_login = False"
+            query = "UPDATE users SET is_login = False"
             execute_query(query=query)
             return True
         except Exception as e:

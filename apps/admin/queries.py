@@ -6,22 +6,37 @@ admin_menu = """
 3. Exit
 """
 class AdminQueries():
-    def add_restaurant(self):
-        username = input("Enter restaurant username: ")
-        password = input("Enter restaurant password: ")
+    def add_kitchen(self, params: tuple):
+        """
+        Insert a new kitchen into the database and return its ID.
 
-        params = (username, password, 'restaurant')
+        :param params: Tuple containing (name, owner_id)
+        :return: int (new kitchen ID) or None if failed
+        """
         try:
             query = """
-                        INSERT INTO users (username, password, role)
-                        VALUES (%s, %s, %s)
-                    """
-            execute_query(query=query, params=params)
-            print("Restaurant account created successfully!")
-            return True
+                INSERT INTO kitchens(name, owner_id)
+                VALUES (%s, %s);
+            """
+            result = execute_query(query=query, params=params)
+            if result:
+                return result[0]
+            return None
+        except Exception as e:
+            print(f"Error inserting kitchen: {e}")
+            return None
+
+    def add_courier(self, params: tuple):
+        try:
+            query = """
+                INSERT INTO couriers(name, owner_id)
+                VALUES( %s, %s)
+                RETURNING id;
+        """
+            result = execute_query(query=query, params=params)
+            if result:
+                return result[0]
+            return None
         except Exception as e:
             print(f"Error: {e}")
             return None
-
-    def add_courier(self):
-        pass

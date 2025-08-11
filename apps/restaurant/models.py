@@ -1,10 +1,9 @@
-products_query = """
-              CREATE TABLE IF NOT EXISTS products
+kitchens_query = """
+              CREATE TABLE IF NOT EXISTS kitchens
               (
                   id          SERIAL PRIMARY KEY,
-                  product_name  VARCHAR(128) NOT NULL,
-                  price         VARCHAR(100) NOT NULL,
-                  is_active   BOOLEAN   DEFAULT FALSE,
+                  name  VARCHAR(128) NOT NULL,
+                  owner_id     INT NOT NULL REFERENCES users(id),
                   created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
               ) \
               """
