@@ -3,7 +3,7 @@ from core.database import execute_query
 class AuthQueries:
     @staticmethod
     def get_user_by_phone_number(phone_number) -> dict | None:
-        query = "SELECT * FROM user WHERE phone_number = %s"
+        query = "SELECT * FROM users WHERE phone_number = %s"
         params = (phone_number,)
 
         user = execute_query(query=query, params=params, fetch="one")
@@ -29,18 +29,19 @@ class AuthQueries:
         user = execute_query(query=query, params=params, fetch="one")
         return user if user else None
 
+
     @staticmethod
     def add_user(params: tuple) -> None | bool:
         try:
-            query = """INSERT INTO restaurant (full_name, phone_number, password)
-                       VALUES (%s, %s, %s, %s)
+            query = """INSERT INTO users (full_name, phone_number, password)
+                    VALUES (%s, %s, %s)
                     """
-
             execute_query(query=query, params=params)
             return True
         except Exception as e:
             print(e)
             return None
+
 
     @staticmethod
     def get_verification_code(phone_number, code) -> dict | None:
@@ -70,7 +71,7 @@ class AuthQueries:
     @staticmethod
     def update_user_status(status, phone_number) -> None | bool:
         try:
-            query = "UPDATE restaurant SET is_active = %s WHERE phone_number = %s"
+            query = "UPDATE users SET is_active = %s WHERE phone_number = %s"
             params = (status, phone_number,)
             execute_query(query=query, params=params)
             return True
@@ -87,6 +88,7 @@ class AuthQueries:
         except Exception as e:
             print(e)
             return None
+
 
 def show_products():
     try:

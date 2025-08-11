@@ -17,7 +17,7 @@ class RegisterView(AuthValidation, AuthQueries):
             print("Invalid code")
             return self.verify_code()
         else:
-            # check validation time
+          
             self.update_user_status(True, phone_number)
             print("You can login now")
             return True
@@ -68,6 +68,7 @@ class RegisterView(AuthValidation, AuthQueries):
         else:
             print("Something get wrong, please try again later")
             return None
+
 
 class LoginView(AuthQueries):
     def __init__(self):

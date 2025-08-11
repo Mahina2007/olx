@@ -13,11 +13,15 @@ main_menu = """
 def get_user_option(menu: str, max_option: int) -> str:
     while True:
         print(menu)
-        option = input("Enter your option: ")
-        if not (1 <= int(option) <= max_option):
-            print("Invalid option number!")
-        else:
+        option = input("Enter your option: ").strip().lower()
+        
+        if option == "exit":
+            return "exit"
+        
+        if option.isdigit() and 1 <= int(option) <= max_option:
             return option
+        
+        print("Invalid option! Please enter a number or 'exit'.")
 
 
 def execute_tables():
