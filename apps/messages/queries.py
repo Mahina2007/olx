@@ -13,7 +13,7 @@ class MessageQueries:
 
     @staticmethod
     def get_all_user() -> list:
-        query = "SELECT * FROM users WHERE is_active = True"
+        query = "SELECT * FROM restaurant WHERE is_active = True"
         users = execute_query(query=query, fetch="all")
         return users if users else None
 

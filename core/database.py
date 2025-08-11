@@ -127,13 +127,13 @@ def execute_query(
 
     Example:
         # Insert data
-        execute_query("INSERT INTO users (name) VALUES (%s)", ("John",))
+        execute_query("INSERT INTO restaurant (name) VALUES (%s)", ("John",))
 
         # Get single user
-        user = execute_query("SELECT * FROM users WHERE id = %s", (1,), fetch="one")
+        user = execute_query("SELECT * FROM restaurant WHERE id = %s", (1,), fetch="one")
 
-        # Get all users
-        users = execute_query("SELECT * FROM users", fetch="all")
+        # Get all restaurant
+        restaurant = execute_query("SELECT * FROM restaurant", fetch="all")
     """
     try:
         # Use context manager for automatic connection handling

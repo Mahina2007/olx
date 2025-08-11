@@ -3,7 +3,7 @@ from core.database import execute_query
 class AuthQueries:
     @staticmethod
     def get_user_by_phone_number(phone_number) -> dict | None:
-        query = "SELECT * FROM users WHERE phone_number = %s"
+        query = "SELECT * FROM user WHERE phone_number = %s"
         params = (phone_number,)
 
         user = execute_query(query=query, params=params, fetch="one")
@@ -11,7 +11,7 @@ class AuthQueries:
 
     @staticmethod
     def update_user_is_login(phone_number) -> dict | bool:
-        query = "UPDATE users SET is_login = %s WHERE phone_number = %s"
+        query = "UPDATE user SET is_login = %s WHERE phone_number = %s"
         params = (True, phone_number,)
         execute_query(query=query, params=params)
         return True
@@ -23,7 +23,7 @@ class AuthQueries:
         if not exists return None
         :return:
         """
-        query = "SELECT * FROM users WHERE is_login = %s"
+        query = "SELECT * FROM user WHERE is_login = %s"
         params = (True,)
 
         user = execute_query(query=query, params=params, fetch="one")
@@ -32,7 +32,7 @@ class AuthQueries:
     @staticmethod
     def add_user(params: tuple) -> None | bool:
         try:
-            query = """INSERT INTO users (full_name, phone_number, password)
+            query = """INSERT INTO restaurant (full_name, phone_number, password, role)
                        VALUES (%s, %s, %s)
                     """
 
@@ -70,7 +70,7 @@ class AuthQueries:
     @staticmethod
     def update_user_status(status, phone_number) -> None | bool:
         try:
-            query = "UPDATE users SET is_active = %s WHERE phone_number = %s"
+            query = "UPDATE restaurant SET is_active = %s WHERE phone_number = %s"
             params = (status, phone_number,)
             execute_query(query=query, params=params)
             return True
@@ -81,7 +81,7 @@ class AuthQueries:
     @staticmethod
     def logout_all_users() -> None | bool:
         try:
-            query = "UPDATE users SET is_login = False"
+            query = "UPDATE restaurant SET is_login = False"
             execute_query(query=query)
             return True
         except Exception as e:
@@ -90,12 +90,12 @@ class AuthQueries:
 
 def show_products():
     try:
-        query = "SELECT id, title, description, price FROM posts;"
+        query = "SELECT id, title, description, price FROM orders;"
         results = execute_query(query=query, fetch="all")
 
         if results:
             for row in results:
-                print(f"id: {row[0]}, product: {row[1]}, desciption: {row[2]}, price: {row[3]} sum")
+                print(f"id: {row[0]}, product: {row[1]}, description: {row[2]}, price: {row[3]} sum")
         else:
             print("nothing is found")
         return True

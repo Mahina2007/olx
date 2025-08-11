@@ -69,16 +69,21 @@ class RegisterView(AuthValidation, AuthQueries):
             print("Something get wrong, please try again later")
             return None
 
-admin_phone_number = "a"
-admin_password = "a"
-
 class LoginView(AuthQueries):
+    def __init__(self):
+        self.admin_phone_number = "a"
+        self.admin_password = "a"
+        self.restaurant_phone_number = "r"
+        self.restaurant_password = "r"
+
     def login(self):
         phone_number = input("Enter your phone number: ")
         password = input("Enter your password: ")
         user = self.get_user_by_phone_number(phone_number)
-        if phone_number == admin_phone_number and password == admin_password:
+        if phone_number == self.admin_phone_number and password == self.admin_password:
             return "admin"
+        if phone_number == self.restaurant_phone_number and password == self.restaurant_password:
+            return "restaurant"
         if user and user['password'] == password:
             self.update_user_is_login(phone_number=phone_number)
             print(f"Welcome, {user['full_name']}")
