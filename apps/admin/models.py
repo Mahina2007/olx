@@ -1,5 +1,5 @@
-kitchens_query = """
-              CREATE TABLE IF NOT EXISTS kitchens
+restaurants_query = """
+              CREATE TABLE IF NOT EXISTS restaurants
               (
                   id          SERIAL PRIMARY KEY,
                   name  VARCHAR(128) NOT NULL,

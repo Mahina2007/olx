@@ -5,8 +5,9 @@ admin_menu = """
 2. Add a courier
 3. Exit
 """
-class AdminQueries():
-    def add_kitchen(self, params: tuple):
+class AdminQueries:
+    @staticmethod
+    def add_restaurant(name, owner_id):
         """
         Insert a new kitchen into the database and return its ID.
 
@@ -15,28 +16,36 @@ class AdminQueries():
         """
         try:
             query = """
-                INSERT INTO kitchens(name, owner_id)
+                INSERT INTO restaurants(name, owner_id)
                 VALUES (%s, %s);
             """
-            result = execute_query(query=query, params=params)
-            if result:
-                return result[0]
-            return None
+            params = (name, owner_id)
+            execute_query(query=query, params=params)
         except Exception as e:
             print(f"Error inserting kitchen: {e}")
             return None
 
-    def add_courier(self, params: tuple):
+    @staticmethod
+    def add_courier(name, owner_id):
         try:
             query = """
                 INSERT INTO couriers(name, owner_id)
-                VALUES( %s, %s)
-                RETURNING id;
+                VALUES( %s, %s);
         """
-            result = execute_query(query=query, params=params)
-            if result:
-                return result[0]
-            return None
+            params = (name, owner_id)
+            execute_query(query=query, params=params)
         except Exception as e:
             print(f"Error: {e}")
             return None
+
+    @staticmethod
+    def courier_owner_exists(owner_id):
+        try:
+            query = "SELECT 1 FROM couriers WHERE owner_id = %s"
+            params = (owner_id,)
+            result = execute_query(query=query, params=params, fetch="one")
+            return result is not None  # True if found, False if not
+        except Exception as e:
+            print(f"Error checking owner: {e}")
+            return None
+

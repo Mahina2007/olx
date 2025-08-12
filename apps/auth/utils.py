@@ -1,13 +1,40 @@
-class AuthValidation:
-    def __init__(self):
-        self.errors = []
+from apps.admin.models import restaurants_query, couriers_query
+from apps.restaurant.models import products_query
+from core.database import execute_query
 
-    def check_phone_number(self, phone_number):
-        if phone_number.startswith('+') and phone_number[1:].isdigit() and 10 <= len(phone_number[1:]) <= 15:
-            return True
-        return f"invalid phone number, try again"
+main_menu = """
+1. Register
+2. Login
+3. Exit
+"""
 
-    def check_password(self, password1, password2):
-        if password1 != password2:
-            return []
-        return True
+
+
+
+def get_user_option(menu: str, max_option: int) -> str:
+    while True:
+        print(menu)
+        option = input("Enter your option: ").strip().lower()
+        
+        if option == "exit":
+            return "exit"
+        
+        if option.isdigit() and 1 <= int(option) <= max_option:
+            return option
+        
+        print("Invalid option! Please enter a number or 'exit'.")
+
+
+def execute_tables():
+    from apps.auth.models import users_query, verification_codes_query
+    from apps.user.models import orders_query
+    from apps.user.models import order_products_query
+
+    execute_query(query=users_query)
+    execute_query(query=verification_codes_query)
+    execute_query(query=orders_query)
+    execute_query(query=restaurants_query)
+    execute_query(query=couriers_query)
+    execute_query(query=products_query)
+    execute_query(query=order_products_query)
+

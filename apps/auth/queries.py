@@ -11,7 +11,7 @@ class AuthQueries:
 
     @staticmethod
     def update_user_is_login(phone_number) -> dict | bool:
-        query = "UPDATE user SET is_login = %s WHERE phone_number = %s"
+        query = "UPDATE users SET is_login = %s WHERE phone_number = %s"
         params = (True, phone_number,)
         execute_query(query=query, params=params)
         return True
@@ -23,7 +23,7 @@ class AuthQueries:
         if not exists return None
         :return:
         """
-        query = "SELECT * FROM user WHERE is_login = %s"
+        query = "SELECT * FROM users WHERE is_login = %s"
         params = (True,)
 
         user = execute_query(query=query, params=params, fetch="one")
@@ -33,8 +33,8 @@ class AuthQueries:
     @staticmethod
     def add_user(params: tuple) -> None | bool:
         try:
-            query = """INSERT INTO users (full_name, phone_number, password)
-                    VALUES (%s, %s, %s)
+            query = """INSERT INTO users (full_name, phone_number, password, role)
+                    VALUES (%s, %s, %s, %s)
                     """
             execute_query(query=query, params=params)
             return True
@@ -90,18 +90,4 @@ class AuthQueries:
             return None
 
 
-def show_products():
-    try:
-        query = "SELECT id, title, description, price FROM orders;"
-        results = execute_query(query=query, fetch="all")
-
-        if results:
-            for row in results:
-                print(f"id: {row[0]}, product: {row[1]}, description: {row[2]}, price: {row[3]} sum")
-        else:
-            print("nothing is found")
-        return True
-    except Exception as e:
-        print(e)
-        return None
 

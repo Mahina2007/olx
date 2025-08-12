@@ -1,13 +1,6 @@
 from apps.orders.queries import OrdersQueries
 from core.database import execute_query
 
-
-user_menu = """
-1. Add an order
-2. Delete an order
-3. Chat with courier
-4. Exit
-"""
 class UserMenu(OrdersQueries):
     def add_order(self):
         order = input("enter your order: ")
