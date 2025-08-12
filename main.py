@@ -40,7 +40,7 @@ class Menu:
     def user_menu(self):
         option = get_user_option(menu=user_menu, max_option=4)
         if option == "1":
-            UserViews().add_order()
+            UserMenu().add_order()
             return Menu().user_menu()
         elif option == "2":
             UserMenu().delete_order()
@@ -83,5 +83,5 @@ if __name__ == '__main__':
     execute_tables()
     LogoutView.logout_all_users()
     Menu().main_menu()
-    # Menu().user_menu()
+    Menu().user_menu()
     # # Menu().restaurants_menu()

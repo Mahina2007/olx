@@ -2,9 +2,6 @@
 orders_query = """
 CREATE TABLE IF NOT EXISTS orders (
     id             SERIAL PRIMARY KEY,
-    user_id        INT NOT NULL,
-    restaurant_id  INT NOT NULL,
-    courier_id     INT,
     status         VARCHAR(100) DEFAULT 'pending',
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id),

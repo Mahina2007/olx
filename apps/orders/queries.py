@@ -3,7 +3,7 @@ from core.database import execute_query
 class OrdersQueries:
     def add_orders(self, params: tuple) -> None | bool:
         try:
-            query = """INSERT INTO orders (product)
+            query = """INSERT INTO orders (name, )
                        VALUES (%s)
                     """
 

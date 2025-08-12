@@ -1,9 +1,12 @@
 from apps.orders.queries import OrdersQueries
+from apps.user.views import UserViews
 from core.database import execute_query
 
-class UserMenu(OrdersQueries):
+class UserMenu(OrdersQueries, UserViews):
     def add_order(self):
-        order = input("enter your order: ")
+        self.show_products()
+
+        order = input("enter your order id: ")
         params = (order,)
         if self.add_orders(params):
             print("order added successfully!")

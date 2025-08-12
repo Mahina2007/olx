@@ -29,7 +29,7 @@ class UserViews(RestaurantViews, AuthQueries):
                 print("Quantity must be greater than 0.")
                 return
 
-            product_query = "SELECT restaurant_id FROM products WHERE id = %s"
+            product_query = "SELECT * FROM products WHERE id = %s"
             product = execute_query(query=product_query, params=(food_id,), fetch="one")
 
             if not product:
@@ -37,7 +37,7 @@ class UserViews(RestaurantViews, AuthQueries):
                 return
 
             restaurant_id = product["restaurant_id"]
-            courier_id = None  # No courier assigned yet
+            courier_id = None
             status = 'pending'
 
             # Step 3: Create a new order for the current user
@@ -64,9 +64,6 @@ class UserViews(RestaurantViews, AuthQueries):
             print("Invalid input. Please enter numeric values.")
         except Exception as e:
             print(f"Error adding order: {e}")
-
-
-
 
     def delete_order(self):
         pass
